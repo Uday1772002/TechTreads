@@ -33,8 +33,10 @@ EXPOSE 3000/tcp
 # Create a startup script that runs migrations first
 COPY --chown=bun:bun <<EOF /usr/src/app/start.sh
 #!/bin/sh
+echo "=== STARTUP SCRIPT STARTED ==="
 echo "Running database migrations..."
 bun run db:migrate
+echo "Migrations completed with exit code: $?"
 echo "Starting application..."
 bun run start
 EOF

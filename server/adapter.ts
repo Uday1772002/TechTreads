@@ -20,7 +20,7 @@ const EnvSchema = z.object({
 
 const processEnv = EnvSchema.parse(process.env);
 
-// Add SSL configuration for Render's PostgreSQL
+// DEPLOYMENT TEST - SSL configuration for Render's PostgreSQL
 const queryClient = postgres(processEnv.DATABASE_URL, {
   ssl: {
     rejectUnauthorized: false,
