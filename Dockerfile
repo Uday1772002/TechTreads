@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 FROM base AS install
 RUN mkdir -p /temp/prod/server
 COPY package.json bun.lockb /temp/prod/server/
-RUN cd /temp/prod/server && bun install --frozen-lockfile --production
+RUN cd /temp/prod/server && bun install --frozen-lockfile
 
 RUN mkdir -p /temp/prod/frontend
 COPY frontend/bun.lockb frontend/package.json /temp/prod/frontend/
