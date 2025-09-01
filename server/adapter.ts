@@ -20,7 +20,12 @@ const EnvSchema = z.object({
 
 const processEnv = EnvSchema.parse(process.env);
 
-const queryClient = postgres(processEnv.DATABASE_URL);
+// Add SSL configuration for Render's PostgreSQL
+const queryClient = postgres(processEnv.DATABASE_URL, {
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
 export const db = drizzle(queryClient, {
   schema: {
     user: userTable,
