@@ -6,7 +6,10 @@
     "format:check": "prettier . --check",
     "lint:server": "cd server && eslint .",
     "lint:frontend": "cd frontend && eslint .",
-    "start": "bun server/index.ts"
+    "start": "bun server/index.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.1",

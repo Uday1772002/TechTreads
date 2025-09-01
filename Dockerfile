@@ -29,4 +29,15 @@ COPY --from=build /usr/src/app/frontend/dist ./frontend/dist
 
 USER bun
 EXPOSE 3000/tcp
-ENTRYPOINT [ "bun", "run", "start" ]
+
+# Create a startup script that runs migrations first
+COPY --chown=bun:bun <<EOF /usr/src/app/start.sh
+#!/bin/sh
+echo "Running database migrations..."
+bun run db:migrate
+echo "Starting application..."
+bun run start
+EOF
+
+RUN chmod +x start.sh
+ENTRYPOINT [ "/usr/src/app/start.sh" ]
