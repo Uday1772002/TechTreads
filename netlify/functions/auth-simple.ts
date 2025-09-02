@@ -17,100 +17,36 @@ export const handler: Handler = async (event) => {
       event.httpMethod === "POST" &&
       (event.path === "/signup" || event.path.endsWith("/signup"))
     ) {
-      // Parse form data - try multiple approaches
+      // Parse form data - simplified approach
       let username, password;
+      
+      console.log("Raw request data:", {
+        contentType: event.headers["content-type"],
+        body: event.body,
+        bodyLength: event.body?.length,
+      });
 
-      // First try URLSearchParams (most common for form data)
+      // Try URLSearchParams first (most common)
       try {
         const body = new URLSearchParams(event.body || "");
         username = body.get("username");
         password = body.get("password");
-        if (username && password) {
-          console.log("Parsed with URLSearchParams");
-        }
+        console.log("URLSearchParams result:", { username, password: password ? "***" : "missing" });
       } catch (e) {
         console.log("URLSearchParams failed:", e);
       }
 
-      // Try to handle multipart/form-data (what Hono client might send)
-      if (
-        (!username || !password) &&
-        event.headers["content-type"]?.includes("multipart/form-data")
-      ) {
-        try {
-          const body = event.body || "";
-          // Simple multipart parsing for form data
-          const boundary = event.headers["content-type"]?.split("boundary=")[1];
-          if (boundary) {
-            const parts = body.split(`--${boundary}`);
-            for (const part of parts) {
-              if (part.includes('name="username"')) {
-                const match = part.match(/name="username"\r?\n\r?\n([^\r\n]+)/);
-                if (match) username = match[1];
-              }
-              if (part.includes('name="password"')) {
-                const match = part.match(/name="password"\r?\n\r?\n([^\r\n]+)/);
-                if (match) password = match[1];
-              }
-            }
-            if (username && password) {
-              console.log("Parsed with multipart/form-data");
-            }
-          }
-        } catch (e) {
-          console.log("Multipart parsing failed:", e);
-        }
-      }
-
-      // If that didn't work, try JSON
+      // If no data, try simple regex parsing
       if (!username || !password) {
         try {
-          const body = JSON.parse(event.body || "{}");
-          username = body.username;
-          password = body.password;
-          if (username && password) {
-            console.log("Parsed with JSON");
-          }
-        } catch (e) {
-          console.log("JSON parsing failed:", e);
-        }
-      }
-
-      // If still no data, try to parse as multipart form data
-      if (!username || !password) {
-        try {
-          // Simple multipart parsing
-          const body = event.body || "";
-          const usernameMatch = body.match(
-            /name="username"\r?\n\r?\n([^\r\n]+)/,
-          );
-          const passwordMatch = body.match(
-            /name="password"\r?\n\r?\n([^\r\n]+)/,
-          );
-          if (usernameMatch) username = usernameMatch[1];
-          if (passwordMatch) password = passwordMatch[1];
-          if (username && password) {
-            console.log("Parsed with multipart");
-          }
-        } catch (e) {
-          console.log("Multipart parsing failed:", e);
-        }
-      }
-
-      // If still no data, try to parse as FormData (for Hono client)
-      if (!username || !password) {
-        try {
-          // Handle FormData format that Hono client might send
           const body = event.body || "";
           const usernameMatch = body.match(/username=([^&]+)/);
           const passwordMatch = body.match(/password=([^&]+)/);
           if (usernameMatch) username = decodeURIComponent(usernameMatch[1]);
           if (passwordMatch) password = decodeURIComponent(passwordMatch[1]);
-          if (username && password) {
-            console.log("Parsed with FormData regex");
-          }
+          console.log("Regex parsing result:", { username, password: password ? "***" : "missing" });
         } catch (e) {
-          console.log("FormData regex parsing failed:", e);
+          console.log("Regex parsing failed:", e);
         }
       }
 
