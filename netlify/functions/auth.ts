@@ -217,7 +217,7 @@ app.get("/logout", async (c) => {
 });
 
 // Netlify function handler
-export const handler: Handler = async (event: any, context: any) => {
+export const handler: Handler = async (event: any) => {
   try {
     const url = new URL(event.rawUrl);
     // Handle both direct function calls and API redirects
@@ -245,7 +245,7 @@ export const handler: Handler = async (event: any, context: any) => {
       headers: {
         ...Object.fromEntries(response.headers.entries()),
         "Content-Type": "application/json",
-      },
+      } as Record<string, string>,
       body: body,
     };
   } catch (error) {
