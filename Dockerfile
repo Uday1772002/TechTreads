@@ -31,12 +31,23 @@ USER bun
 EXPOSE 3000/tcp
 
 # Create a startup script that runs migrations first
+# DEPLOYMENT TEST - SSL environment variables for Render PostgreSQL
 COPY --chown=bun:bun <<EOF /usr/src/app/start.sh
 #!/bin/sh
 echo "=== STARTUP SCRIPT STARTED ==="
+
+# Force SSL for all database connections
+export PGSSLMODE=require
+export PGSSLCERT=""
+export PGSSLKEY=""
+export PGSSLROOTCERT=""
+
+echo "SSL environment variables set:"
+echo "PGSSLMODE: \$PGSSLMODE"
+
 echo "Running database migrations..."
 bun run db:migrate
-echo "Migrations completed with exit code: $?"
+echo "Migrations completed with exit code: \$?"
 echo "Starting application..."
 bun run start
 EOF
