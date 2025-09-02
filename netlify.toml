@@ -1,5 +1,5 @@
 [build]
-  command = "bun install && bun run build"
+  command = "bun install && cd frontend && bun install && bun run build"
   publish = "frontend/dist"
   functions = "netlify/functions"
 
