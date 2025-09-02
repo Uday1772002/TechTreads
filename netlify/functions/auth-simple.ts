@@ -19,7 +19,7 @@ export const handler: Handler = async (event) => {
     ) {
       // Parse form data - try multiple approaches
       let username, password;
-      
+
       // First try URLSearchParams (most common for form data)
       try {
         const body = new URLSearchParams(event.body || "");
@@ -31,7 +31,7 @@ export const handler: Handler = async (event) => {
       } catch (e) {
         console.log("URLSearchParams failed:", e);
       }
-      
+
       // If that didn't work, try JSON
       if (!username || !password) {
         try {
@@ -45,14 +45,18 @@ export const handler: Handler = async (event) => {
           console.log("JSON parsing failed:", e);
         }
       }
-      
+
       // If still no data, try to parse as multipart form data
       if (!username || !password) {
         try {
           // Simple multipart parsing
           const body = event.body || "";
-          const usernameMatch = body.match(/name="username"\r?\n\r?\n([^\r\n]+)/);
-          const passwordMatch = body.match(/name="password"\r?\n\r?\n([^\r\n]+)/);
+          const usernameMatch = body.match(
+            /name="username"\r?\n\r?\n([^\r\n]+)/,
+          );
+          const passwordMatch = body.match(
+            /name="password"\r?\n\r?\n([^\r\n]+)/,
+          );
           if (usernameMatch) username = usernameMatch[1];
           if (passwordMatch) password = passwordMatch[1];
           if (username && password) {
