@@ -42,8 +42,18 @@ export PGSSLCERT=""
 export PGSSLKEY=""
 export PGSSLROOTCERT=""
 
+# Modify DATABASE_URL to force SSL
+if [ -n "\$DATABASE_URL" ]; then
+  # Add SSL parameters to the connection string
+  if [[ "\$DATABASE_URL" != *"sslmode"* ]]; then
+    export DATABASE_URL="\$DATABASE_URL?sslmode=require&ssl=true"
+    echo "Modified DATABASE_URL to force SSL"
+  fi
+fi
+
 echo "SSL environment variables set:"
 echo "PGSSLMODE: \$PGSSLMODE"
+echo "DATABASE_URL: \$DATABASE_URL"
 
 echo "Running database migrations..."
 bun run db:migrate
