@@ -7,7 +7,8 @@
     "lint:server": "cd server && eslint .",
     "lint:frontend": "cd frontend && eslint .",
     "start": "bun server/start.ts",
-    "migrate": "bun run drizzle-kit push"
+    "migrate": "bun run drizzle-kit push",
+    "build": "cd frontend && bun run build"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.1",

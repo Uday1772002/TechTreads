@@ -2,7 +2,7 @@
 
 This repo is an implementation of Techtreads It includes post, comments, nested comments, authentication and deployment with Docker as well.
 
-Utilises the following:
+Utilizers the following:
 
 - Hono
 - Bun
@@ -13,8 +13,6 @@ Utilises the following:
 - Tanstack Form
 - Zod
 - TypeScript
-
-
 
 ## Usage
 
