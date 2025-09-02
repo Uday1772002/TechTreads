@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 FROM base AS install
 RUN mkdir -p /temp/prod/server
 COPY package.json bun.lockb /temp/prod/server/
-RUN cd /temp/prod/server && bun install --frozen-lockfile
+RUN cd /temp/prod/server && bun install --frozen-lockfile --production
 
 RUN mkdir -p /temp/prod/frontend
 COPY frontend/bun.lockb frontend/package.json /temp/prod/frontend/
@@ -29,38 +29,4 @@ COPY --from=build /usr/src/app/frontend/dist ./frontend/dist
 
 USER bun
 EXPOSE 3000/tcp
-
-# Create a startup script that runs migrations first
-# DEPLOYMENT TEST - SSL environment variables for Render PostgreSQL
-COPY --chown=bun:bun <<EOF /usr/src/app/start.sh
-#!/bin/sh
-echo "=== STARTUP SCRIPT STARTED ==="
-
-# Force SSL for all database connections
-export PGSSLMODE=require
-export PGSSLCERT=""
-export PGSSLKEY=""
-export PGSSLROOTCERT=""
-
-# Modify DATABASE_URL to force SSL
-if [ -n "\$DATABASE_URL" ]; then
-  # Add SSL parameters to the connection string
-  if [[ "\$DATABASE_URL" != *"sslmode"* ]]; then
-    export DATABASE_URL="\$DATABASE_URL?sslmode=require&ssl=true"
-    echo "Modified DATABASE_URL to force SSL"
-  fi
-fi
-
-echo "SSL environment variables set:"
-echo "PGSSLMODE: \$PGSSLMODE"
-echo "DATABASE_URL: \$DATABASE_URL"
-
-echo "Running database migrations..."
-bun run db:migrate
-echo "Migrations completed with exit code: \$?"
-echo "Starting application..."
-bun run start
-EOF
-
-RUN chmod +x start.sh
-ENTRYPOINT [ "/usr/src/app/start.sh" ]
+ENTRYPOINT [ "bun", "run", "start" ]
