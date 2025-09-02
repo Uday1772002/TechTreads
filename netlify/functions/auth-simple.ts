@@ -31,9 +31,12 @@ export const handler: Handler = async (event) => {
       } catch (e) {
         console.log("URLSearchParams failed:", e);
       }
-      
+
       // Try to handle multipart/form-data (what Hono client might send)
-      if ((!username || !password) && event.headers["content-type"]?.includes("multipart/form-data")) {
+      if (
+        (!username || !password) &&
+        event.headers["content-type"]?.includes("multipart/form-data")
+      ) {
         try {
           const body = event.body || "";
           // Simple multipart parsing for form data
