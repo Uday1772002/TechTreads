@@ -14,7 +14,7 @@
 # API redirects to Netlify Functions
 [[redirects]]
   from = "/api/auth/*"
-  to = "/.netlify/functions/debug/:splat"
+  to = "/.netlify/functions/auth-simple/:splat"
   status = 200
 
 [[redirects]]
