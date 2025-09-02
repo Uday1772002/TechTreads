@@ -19,9 +19,8 @@ app.use(
     origin:
       process.env.NODE_ENV === "production"
         ? [
-            "https://techtreads-app.fly.dev",
-            "https://techtreads-app.railway.app",
-            "https://techtreads-app.onrender.com",
+            "https://techtreads.netlify.app",
+            "https://techtreads-app.netlify.app",
           ]
         : ["http://localhost:3000", "http://localhost:3001"],
     credentials: true,
