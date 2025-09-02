@@ -6,7 +6,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 
 import { zValidator } from "@hono/zod-validator";
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
-import { Handler } from "@netlify/functions";
+import type { Handler } from "@netlify/functions";
 import { generateId, Lucia } from "lucia";
 import postgres from "postgres";
 
@@ -15,7 +15,7 @@ import { sessionTable, userTable } from "../../server/db/schemas/auth";
 import { loginSchema, type SuccessResponse } from "../../shared/types";
 
 // Database setup
-const queryClient = postgres(process.env.DATABASE_URL!, {
+const queryClient = postgres(process.env["DATABASE_URL"]!, {
   max: 10,
   idle_timeout: 20,
   connect_timeout: 10,
@@ -217,15 +217,24 @@ app.get("/logout", async (c) => {
 });
 
 // Netlify function handler
-export const handler: Handler = async (event, context) => {
+export const handler: Handler = async (event: any, context: any) => {
   try {
     const url = new URL(event.rawUrl);
-    const path = url.pathname.replace("/.netlify/functions/auth", "");
+    // Handle both direct function calls and API redirects
+    let path = url.pathname;
+    if (path.startsWith("/.netlify/functions/auth")) {
+      path = path.replace("/.netlify/functions/auth", "");
+    } else if (path.startsWith("/api/auth")) {
+      path = path.replace("/api/auth", "");
+    }
 
     const request = new Request(event.rawUrl, {
       method: event.httpMethod,
-      headers: event.headers as HeadersInit,
-      body: event.body,
+      headers: event.headers as any,
+      body:
+        event.httpMethod === "GET" || event.httpMethod === "HEAD"
+          ? undefined
+          : event.body,
     });
 
     const response = await app.fetch(request);
