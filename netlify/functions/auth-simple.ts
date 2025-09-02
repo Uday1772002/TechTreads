@@ -17,24 +17,49 @@ export const handler: Handler = async (event) => {
       event.httpMethod === "POST" &&
       (event.path === "/signup" || event.path.endsWith("/signup"))
     ) {
-      // Parse form data - handle both URLSearchParams and JSON
+      // Parse form data - try multiple approaches
       let username, password;
       
-      if (event.headers["content-type"]?.includes("application/x-www-form-urlencoded")) {
+      // First try URLSearchParams (most common for form data)
+      try {
         const body = new URLSearchParams(event.body || "");
         username = body.get("username");
         password = body.get("password");
-      } else {
-        // Handle JSON or other formats
+        if (username && password) {
+          console.log("Parsed with URLSearchParams");
+        }
+      } catch (e) {
+        console.log("URLSearchParams failed:", e);
+      }
+      
+      // If that didn't work, try JSON
+      if (!username || !password) {
         try {
           const body = JSON.parse(event.body || "{}");
           username = body.username;
           password = body.password;
-        } catch {
-          // Fallback to URLSearchParams
-          const body = new URLSearchParams(event.body || "");
-          username = body.get("username");
-          password = body.get("password");
+          if (username && password) {
+            console.log("Parsed with JSON");
+          }
+        } catch (e) {
+          console.log("JSON parsing failed:", e);
+        }
+      }
+      
+      // If still no data, try to parse as multipart form data
+      if (!username || !password) {
+        try {
+          // Simple multipart parsing
+          const body = event.body || "";
+          const usernameMatch = body.match(/name="username"\r?\n\r?\n([^\r\n]+)/);
+          const passwordMatch = body.match(/name="password"\r?\n\r?\n([^\r\n]+)/);
+          if (usernameMatch) username = usernameMatch[1];
+          if (passwordMatch) password = passwordMatch[1];
+          if (username && password) {
+            console.log("Parsed with multipart");
+          }
+        } catch (e) {
+          console.log("Multipart parsing failed:", e);
         }
       }
 
