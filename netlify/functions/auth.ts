@@ -47,15 +47,61 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
-        ? ["https://techtreads.netlify.app", "https://techtreads-app.netlify.app"]
+        ? [
+            "https://techtreads.netlify.app",
+            "https://techtreads-app.netlify.app",
+          ]
         : ["http://localhost:3000", "http://localhost:8888"],
     credentials: true,
   }),
 );
 
-app.post("/signup", zValidator("form", loginSchema), async (c) => {
+app.post("/signup", async (c) => {
   try {
-    const { username, password } = c.req.valid("form");
+    // Parse form data manually
+    const formData = await c.req.formData();
+    const username = formData.get("username") as string;
+    const password = formData.get("password") as string;
+
+    console.log("Signup attempt:", {
+      username,
+      password: password ? "***" : "missing",
+    });
+
+    // Validate input
+    if (!username || !password) {
+      return c.json(
+        {
+          success: false,
+          error: "Username and password are required",
+          isFormError: true,
+        },
+        400,
+      );
+    }
+
+    if (username.length < 3 || username.length > 31) {
+      return c.json(
+        {
+          success: false,
+          error: "Username must be between 3 and 31 characters",
+          isFormError: true,
+        },
+        400,
+      );
+    }
+
+    if (password.length < 3) {
+      return c.json(
+        {
+          success: false,
+          error: "Password must be at least 3 characters",
+          isFormError: true,
+        },
+        400,
+      );
+    }
+
     const passwordHash = await Bun.password.hash(password);
     const userId = generateId(15);
 
@@ -79,20 +125,26 @@ app.post("/signup", zValidator("form", loginSchema), async (c) => {
     );
   } catch (error) {
     console.error("Signup error:", error);
-    
+
     if (error instanceof postgres.PostgresError && error.code === "23505") {
-      return c.json({
-        success: false,
-        error: "Username already used",
-        isFormError: true,
-      }, 409);
+      return c.json(
+        {
+          success: false,
+          error: "Username already used",
+          isFormError: true,
+        },
+        409,
+      );
     }
-    
-    return c.json({
-      success: false,
-      error: "Failed to create user",
-      isFormError: false,
-    }, 500);
+
+    return c.json(
+      {
+        success: false,
+        error: "Failed to create user",
+        isFormError: false,
+      },
+      500,
+    );
   }
 });
 
@@ -183,7 +235,7 @@ export const handler: Handler = async (event, context) => {
       statusCode: response.status,
       headers: {
         ...Object.fromEntries(response.headers.entries()),
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: body,
     };
@@ -192,10 +244,10 @@ export const handler: Handler = async (event, context) => {
     return {
       statusCode: 500,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
       },
       body: JSON.stringify({
         success: false,
