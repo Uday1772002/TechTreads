@@ -12,15 +12,40 @@ const queryClient = postgres(process.env["DATABASE_URL"]!, {
 export const handler: Handler = async (event) => {
   try {
     console.log("Auth function called:", event.path, event.httpMethod);
-    
-    if (event.httpMethod === "POST" && (event.path === "/signup" || event.path.endsWith("/signup"))) {
-      // Parse form data
-      const body = new URLSearchParams(event.body || "");
-      const username = body.get("username");
-      const password = body.get("password");
+
+    if (
+      event.httpMethod === "POST" &&
+      (event.path === "/signup" || event.path.endsWith("/signup"))
+    ) {
+      // Parse form data - handle both URLSearchParams and JSON
+      let username, password;
       
-      console.log("Signup attempt:", { username, password: password ? "***" : "missing" });
-      
+      if (event.headers["content-type"]?.includes("application/x-www-form-urlencoded")) {
+        const body = new URLSearchParams(event.body || "");
+        username = body.get("username");
+        password = body.get("password");
+      } else {
+        // Handle JSON or other formats
+        try {
+          const body = JSON.parse(event.body || "{}");
+          username = body.username;
+          password = body.password;
+        } catch {
+          // Fallback to URLSearchParams
+          const body = new URLSearchParams(event.body || "");
+          username = body.get("username");
+          password = body.get("password");
+        }
+      }
+
+      console.log("Signup attempt:", {
+        username,
+        password: password ? "***" : "missing",
+        contentType: event.headers["content-type"],
+        body: event.body,
+        bodyLength: event.body?.length,
+      });
+
       if (!username || !password) {
         return {
           statusCode: 400,
@@ -35,7 +60,7 @@ export const handler: Handler = async (event) => {
           }),
         };
       }
-      
+
       if (username.length < 3 || username.length > 31) {
         return {
           statusCode: 400,
@@ -50,7 +75,7 @@ export const handler: Handler = async (event) => {
           }),
         };
       }
-      
+
       if (password.length < 3) {
         return {
           statusCode: 400,
@@ -65,10 +90,10 @@ export const handler: Handler = async (event) => {
           }),
         };
       }
-      
+
       // Test database connection
       await queryClient`SELECT 1`;
-      
+
       // For now, just return success (we'll add actual user creation later)
       return {
         statusCode: 201,
@@ -82,7 +107,7 @@ export const handler: Handler = async (event) => {
         }),
       };
     }
-    
+
     return {
       statusCode: 404,
       headers: {
