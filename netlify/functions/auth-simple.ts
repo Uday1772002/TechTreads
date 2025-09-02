@@ -31,6 +31,33 @@ export const handler: Handler = async (event) => {
       } catch (e) {
         console.log("URLSearchParams failed:", e);
       }
+      
+      // Try to handle multipart/form-data (what Hono client might send)
+      if ((!username || !password) && event.headers["content-type"]?.includes("multipart/form-data")) {
+        try {
+          const body = event.body || "";
+          // Simple multipart parsing for form data
+          const boundary = event.headers["content-type"]?.split("boundary=")[1];
+          if (boundary) {
+            const parts = body.split(`--${boundary}`);
+            for (const part of parts) {
+              if (part.includes('name="username"')) {
+                const match = part.match(/name="username"\r?\n\r?\n([^\r\n]+)/);
+                if (match) username = match[1];
+              }
+              if (part.includes('name="password"')) {
+                const match = part.match(/name="password"\r?\n\r?\n([^\r\n]+)/);
+                if (match) password = match[1];
+              }
+            }
+            if (username && password) {
+              console.log("Parsed with multipart/form-data");
+            }
+          }
+        } catch (e) {
+          console.log("Multipart parsing failed:", e);
+        }
+      }
 
       // If that didn't work, try JSON
       if (!username || !password) {
@@ -66,7 +93,7 @@ export const handler: Handler = async (event) => {
           console.log("Multipart parsing failed:", e);
         }
       }
-      
+
       // If still no data, try to parse as FormData (for Hono client)
       if (!username || !password) {
         try {
