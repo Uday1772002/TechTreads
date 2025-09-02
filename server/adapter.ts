@@ -18,9 +18,23 @@ const EnvSchema = z.object({
   DATABASE_URL: z.string().url(),
 });
 
-const processEnv = EnvSchema.parse(process.env);
+let processEnv;
+try {
+  processEnv = EnvSchema.parse(process.env);
+} catch (error) {
+  console.error(
+    "❌ DATABASE_URL environment variable is required and must be a valid URL",
+  );
+  console.error("Current DATABASE_URL:", process.env.DATABASE_URL);
+  throw error;
+}
 
-const queryClient = postgres(processEnv.DATABASE_URL);
+const queryClient = postgres(processEnv.DATABASE_URL, {
+  max: 10,
+  idle_timeout: 20,
+  connect_timeout: 10,
+  ssl: process.env.NODE_ENV === "production" ? "require" : false,
+});
 export const db = drizzle(queryClient, {
   schema: {
     user: userTable,

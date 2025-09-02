@@ -6,11 +6,13 @@
     "format:check": "prettier . --check",
     "lint:server": "cd server && eslint .",
     "lint:frontend": "cd frontend && eslint .",
-    "start": "bun server/index.ts"
+    "start": "bun server/start.ts",
+    "migrate": "bun run drizzle-kit push"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.1",
     "@lucia-auth/adapter-drizzle": "^1.1.0",
+    "@netlify/functions": "^2.6.0",
     "drizzle-orm": "^0.34.1",
     "drizzle-zod": "^0.5.1",
     "hono": "^4.6.3",
