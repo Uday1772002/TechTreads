@@ -19,7 +19,7 @@ export const handler: Handler = async (event) => {
     ) {
       // Parse form data - simplified approach
       let username, password;
-      
+
       console.log("Raw request data:", {
         contentType: event.headers["content-type"],
         body: event.body,
@@ -31,7 +31,10 @@ export const handler: Handler = async (event) => {
         const body = new URLSearchParams(event.body || "");
         username = body.get("username");
         password = body.get("password");
-        console.log("URLSearchParams result:", { username, password: password ? "***" : "missing" });
+        console.log("URLSearchParams result:", {
+          username,
+          password: password ? "***" : "missing",
+        });
       } catch (e) {
         console.log("URLSearchParams failed:", e);
       }
@@ -44,7 +47,10 @@ export const handler: Handler = async (event) => {
           const passwordMatch = body.match(/password=([^&]+)/);
           if (usernameMatch) username = decodeURIComponent(usernameMatch[1]);
           if (passwordMatch) password = decodeURIComponent(passwordMatch[1]);
-          console.log("Regex parsing result:", { username, password: password ? "***" : "missing" });
+          console.log("Regex parsing result:", {
+            username,
+            password: password ? "***" : "missing",
+          });
         } catch (e) {
           console.log("Regex parsing failed:", e);
         }
