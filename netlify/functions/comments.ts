@@ -56,7 +56,7 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
-        ? ["https://techtreads-app.netlify.app"]
+        ? ["https://techtreads.netlify.app", "https://techtreads-app.netlify.app"]
         : ["http://localhost:3000", "http://localhost:8888"],
     credentials: true,
   }),
