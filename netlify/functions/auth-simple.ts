@@ -13,7 +13,7 @@ export const handler: Handler = async (event) => {
   try {
     console.log("Auth function called:", event.path, event.httpMethod);
     
-    if (event.httpMethod === "POST" && event.path === "/signup") {
+    if (event.httpMethod === "POST" && (event.path === "/signup" || event.path.endsWith("/signup"))) {
       // Parse form data
       const body = new URLSearchParams(event.body || "");
       const username = body.get("username");
