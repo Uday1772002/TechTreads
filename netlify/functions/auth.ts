@@ -54,11 +54,11 @@ app.use(
 );
 
 app.post("/signup", zValidator("form", loginSchema), async (c) => {
-  const { username, password } = c.req.valid("form");
-  const passwordHash = await Bun.password.hash(password);
-  const userId = generateId(15);
-
   try {
+    const { username, password } = c.req.valid("form");
+    const passwordHash = await Bun.password.hash(password);
+    const userId = generateId(15);
+
     await db.insert(userTable).values({
       id: userId,
       username,
@@ -78,13 +78,21 @@ app.post("/signup", zValidator("form", loginSchema), async (c) => {
       201,
     );
   } catch (error) {
+    console.error("Signup error:", error);
+    
     if (error instanceof postgres.PostgresError && error.code === "23505") {
-      throw new HTTPException(409, {
-        message: "Username already used",
-        cause: { form: true },
-      });
+      return c.json({
+        success: false,
+        error: "Username already used",
+        isFormError: true,
+      }, 409);
     }
-    throw new HTTPException(500, { message: "Failed to create user" });
+    
+    return c.json({
+      success: false,
+      error: "Failed to create user",
+      isFormError: false,
+    }, 500);
   }
 });
 
@@ -158,20 +166,42 @@ app.get("/logout", async (c) => {
 
 // Netlify function handler
 export const handler: Handler = async (event, context) => {
-  const url = new URL(event.rawUrl);
-  const path = url.pathname.replace("/.netlify/functions/auth", "");
+  try {
+    const url = new URL(event.rawUrl);
+    const path = url.pathname.replace("/.netlify/functions/auth", "");
 
-  const request = new Request(event.rawUrl, {
-    method: event.httpMethod,
-    headers: event.headers as HeadersInit,
-    body: event.body,
-  });
+    const request = new Request(event.rawUrl, {
+      method: event.httpMethod,
+      headers: event.headers as HeadersInit,
+      body: event.body,
+    });
 
-  const response = await app.fetch(request);
+    const response = await app.fetch(request);
+    const body = await response.text();
 
-  return {
-    statusCode: response.status,
-    headers: Object.fromEntries(response.headers.entries()),
-    body: await response.text(),
-  };
+    return {
+      statusCode: response.status,
+      headers: {
+        ...Object.fromEntries(response.headers.entries()),
+        'Content-Type': 'application/json',
+      },
+      body: body,
+    };
+  } catch (error) {
+    console.error("Function error:", error);
+    return {
+      statusCode: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+      },
+      body: JSON.stringify({
+        success: false,
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : String(error),
+      }),
+    };
+  }
 };
