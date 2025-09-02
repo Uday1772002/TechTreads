@@ -66,6 +66,23 @@ export const handler: Handler = async (event) => {
           console.log("Multipart parsing failed:", e);
         }
       }
+      
+      // If still no data, try to parse as FormData (for Hono client)
+      if (!username || !password) {
+        try {
+          // Handle FormData format that Hono client might send
+          const body = event.body || "";
+          const usernameMatch = body.match(/username=([^&]+)/);
+          const passwordMatch = body.match(/password=([^&]+)/);
+          if (usernameMatch) username = decodeURIComponent(usernameMatch[1]);
+          if (passwordMatch) password = decodeURIComponent(passwordMatch[1]);
+          if (username && password) {
+            console.log("Parsed with FormData regex");
+          }
+        } catch (e) {
+          console.log("FormData regex parsing failed:", e);
+        }
+      }
 
       console.log("Signup attempt:", {
         username,
@@ -73,6 +90,7 @@ export const handler: Handler = async (event) => {
         contentType: event.headers["content-type"],
         body: event.body,
         bodyLength: event.body?.length,
+        allHeaders: event.headers,
       });
 
       if (!username || !password) {
