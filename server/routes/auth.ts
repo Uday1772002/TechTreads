@@ -39,6 +39,7 @@ export const authRouter = new Hono<Context>()
         201,
       );
     } catch (error) {
+      console.error("Signup error:", error); // Added error logging
       if (error instanceof postgres.PostgresError && error.code === "23505") {
         throw new HTTPException(409, {
           message: "Username already used",

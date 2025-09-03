@@ -15,6 +15,11 @@ import { sessionTable, userTable } from "../../server/db/schemas/auth";
 import { loginSchema, type SuccessResponse } from "../../shared/types";
 
 // Database setup
+if (!process.env["DATABASE_URL"]) {
+  console.error("DATABASE_URL environment variable is not set");
+  throw new Error("DATABASE_URL environment variable is not set");
+}
+
 const queryClient = postgres(process.env["DATABASE_URL"]!, {
   max: 10,
   idle_timeout: 20,
@@ -216,6 +221,28 @@ app.get("/logout", async (c) => {
   return c.json({ success: true, message: "Logged out" });
 });
 
+app.get("/health", async (c) => {
+  try {
+    // Test database connection
+    await db.select().from(userTable).limit(1);
+    return c.json({
+      success: true,
+      message: "Database connection successful",
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error("Health check error:", error);
+    return c.json(
+      {
+        success: false,
+        error: "Database connection failed",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      500,
+    );
+  }
+});
+
 // Netlify function handler
 export const handler: Handler = async (event: any) => {
   try {
@@ -262,6 +289,7 @@ export const handler: Handler = async (event: any) => {
         success: false,
         error: "Internal server error",
         details: error instanceof Error ? error.message : String(error),
+        isFormError: false,
       }),
     };
   }
