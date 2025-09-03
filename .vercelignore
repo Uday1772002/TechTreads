@@ -1,0 +1,10 @@
+node_modules
+.git
+.env
+.env.local
+.env.production.local
+.env.development.local
+*.log
+.DS_Store
+server
+netlify
