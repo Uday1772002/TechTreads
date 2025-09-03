@@ -10,7 +10,7 @@
       "use": "@vercel/static-build",
       "config": {
         "distDir": "dist",
-        "buildCommand": "cd frontend && bun install && bun run build"
+        "buildCommand": "bun run vercel-build"
       }
     }
   ],
