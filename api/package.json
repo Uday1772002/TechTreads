@@ -1,9 +1,8 @@
 {
-  "name": "techtreads-netlify-functions",
+  "name": "techtreads-api",
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "@netlify/functions": "^2.6.0",
     "@hono/zod-validator": "^0.4.1",
     "@lucia-auth/adapter-drizzle": "^1.1.0",
     "drizzle-orm": "^0.34.1",

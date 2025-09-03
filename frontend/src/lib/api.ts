@@ -10,9 +10,8 @@ import type {
   SuccessResponse,
 } from "@/shared/types";
 
-// Update this to your Vercel backend URL
-const API_BASE_URL = "https://your-backend.vercel.app";
-const client = hc<ApiRoutes>(API_BASE_URL, {
+// Use relative URLs for Vercel API routes
+const client = hc<ApiRoutes>("/", {
   fetch: (input: RequestInfo | URL, init?: RequestInit) =>
     fetch(input, {
       ...init,

@@ -6,7 +6,6 @@ import { drizzle } from "drizzle-orm/postgres-js";
 
 import { zValidator } from "@hono/zod-validator";
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
-import type { Handler } from "@netlify/functions";
 import { generateId, Lucia } from "lucia";
 import postgres from "postgres";
 
@@ -52,11 +51,8 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
-        ? [
-            "https://techtreads.netlify.app",
-            "https://techtreads-app.netlify.app",
-          ]
-        : ["http://localhost:3000", "http://localhost:8888"],
+        ? ["https://techtreads.vercel.app", "https://techtreads-app.vercel.app"]
+        : ["http://localhost:3000", "http://localhost:3001"],
     credentials: true,
   }),
 );
@@ -243,54 +239,4 @@ app.get("/health", async (c) => {
   }
 });
 
-// Netlify function handler
-export const handler: Handler = async (event: any) => {
-  try {
-    const url = new URL(event.rawUrl);
-    // Handle both direct function calls and API redirects
-    let path = url.pathname;
-    if (path.startsWith("/.netlify/functions/auth")) {
-      path = path.replace("/.netlify/functions/auth", "");
-    } else if (path.startsWith("/api/auth")) {
-      path = path.replace("/api/auth", "");
-    }
-
-    const request = new Request(event.rawUrl, {
-      method: event.httpMethod,
-      headers: event.headers as any,
-      body:
-        event.httpMethod === "GET" || event.httpMethod === "HEAD"
-          ? undefined
-          : event.body,
-    });
-
-    const response = await app.fetch(request);
-    const body = await response.text();
-
-    return {
-      statusCode: response.status,
-      headers: {
-        ...Object.fromEntries(response.headers.entries()),
-        "Content-Type": "application/json",
-      } as Record<string, string>,
-      body: body,
-    };
-  } catch (error) {
-    console.error("Function error:", error);
-    return {
-      statusCode: 500,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-      },
-      body: JSON.stringify({
-        success: false,
-        error: "Internal server error",
-        details: error instanceof Error ? error.message : String(error),
-        isFormError: false,
-      }),
-    };
-  }
-};
+export default app;

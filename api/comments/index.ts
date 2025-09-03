@@ -6,7 +6,6 @@ import { drizzle } from "drizzle-orm/postgres-js";
 
 import { zValidator } from "@hono/zod-validator";
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
-import { Handler } from "@netlify/functions";
 import { generateId, Lucia } from "lucia";
 import postgres from "postgres";
 
@@ -18,7 +17,12 @@ import { commentUpvotesTable } from "../../server/db/schemas/upvotes";
 import { type SuccessResponse } from "../../shared/types";
 
 // Database setup
-const queryClient = postgres(process.env.DATABASE_URL!, {
+if (!process.env["DATABASE_URL"]) {
+  console.error("DATABASE_URL environment variable is not set");
+  throw new Error("DATABASE_URL environment variable is not set");
+}
+
+const queryClient = postgres(process.env["DATABASE_URL"]!, {
   max: 10,
   idle_timeout: 20,
   connect_timeout: 10,
@@ -56,8 +60,8 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
-        ? ["https://techtreads.netlify.app", "https://techtreads-app.netlify.app"]
-        : ["http://localhost:3000", "http://localhost:8888"],
+        ? ["https://techtreads.vercel.app", "https://techtreads-app.vercel.app"]
+        : ["http://localhost:3000", "http://localhost:3001"],
     credentials: true,
   }),
 );
@@ -91,7 +95,7 @@ app.get("/:id", async (c) => {
   const comments = await db
     .select()
     .from(commentsTable)
-    .where(eq(commentsTable.post_id, postId))
+    .where(eq(commentsTable.postId, postId))
     .orderBy(orderBy)
     .limit(limit)
     .offset(offset);
@@ -138,9 +142,9 @@ app.post(
       .values({
         id: generateId(15),
         content,
-        post_id: postId,
-        author_id: user.id,
-        created_at: new Date(),
+        postId: postId,
+        userId: user.id,
+        createdAt: new Date(),
       })
       .returning();
 
@@ -186,10 +190,10 @@ app.post(
       .values({
         id: generateId(15),
         content,
-        post_id: parentComment.post_id,
-        parent_id: parentCommentId,
-        author_id: user.id,
-        created_at: new Date(),
+        postId: parentComment.postId,
+        parentCommentId: parentCommentId,
+        userId: user.id,
+        createdAt: new Date(),
       })
       .returning();
 
@@ -218,8 +222,8 @@ app.post("/:id/upvote", async (c) => {
     .select()
     .from(commentUpvotesTable)
     .where(
-      eq(commentUpvotesTable.comment_id, commentId) &&
-        eq(commentUpvotesTable.user_id, user.id),
+      eq(commentUpvotesTable.commentId, commentId) &&
+        eq(commentUpvotesTable.userId, user.id),
     )
     .limit(1);
 
@@ -228,16 +232,16 @@ app.post("/:id/upvote", async (c) => {
     await db
       .delete(commentUpvotesTable)
       .where(
-        eq(commentUpvotesTable.comment_id, commentId) &&
-          eq(commentUpvotesTable.user_id, user.id),
+        eq(commentUpvotesTable.commentId, commentId) &&
+          eq(commentUpvotesTable.userId, user.id),
       );
   } else {
     // Add upvote
     await db.insert(commentUpvotesTable).values({
       id: generateId(15),
-      comment_id: commentId,
-      user_id: user.id,
-      created_at: new Date(),
+      commentId: commentId,
+      userId: user.id,
+      createdAt: new Date(),
     });
   }
 
@@ -247,22 +251,4 @@ app.post("/:id/upvote", async (c) => {
   });
 });
 
-// Netlify function handler
-export const handler: Handler = async (event, context) => {
-  const url = new URL(event.rawUrl);
-  const path = url.pathname.replace("/.netlify/functions/comments", "");
-
-  const request = new Request(event.rawUrl, {
-    method: event.httpMethod,
-    headers: event.headers as HeadersInit,
-    body: event.body,
-  });
-
-  const response = await app.fetch(request);
-
-  return {
-    statusCode: response.status,
-    headers: Object.fromEntries(response.headers.entries()),
-    body: await response.text(),
-  };
-};
+export default app;

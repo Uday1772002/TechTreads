@@ -6,7 +6,6 @@ import { drizzle } from "drizzle-orm/postgres-js";
 
 import { zValidator } from "@hono/zod-validator";
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
-import { Handler } from "@netlify/functions";
 import { Lucia } from "lucia";
 import postgres from "postgres";
 
@@ -18,7 +17,12 @@ import { postUpvotesTable } from "../../server/db/schemas/upvotes";
 import { type SuccessResponse } from "../../shared/types";
 
 // Database setup
-const queryClient = postgres(process.env.DATABASE_URL!, {
+if (!process.env["DATABASE_URL"]) {
+  console.error("DATABASE_URL environment variable is not set");
+  throw new Error("DATABASE_URL environment variable is not set");
+}
+
+const queryClient = postgres(process.env["DATABASE_URL"]!, {
   max: 10,
   idle_timeout: 20,
   connect_timeout: 10,
@@ -56,8 +60,8 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
-        ? ["https://techtreads.netlify.app", "https://techtreads-app.netlify.app"]
-        : ["http://localhost:3000", "http://localhost:8888"],
+        ? ["https://techtreads.vercel.app", "https://techtreads-app.vercel.app"]
+        : ["http://localhost:3000", "http://localhost:3001"],
     credentials: true,
   }),
 );
@@ -86,7 +90,7 @@ app.get("/", async (c) => {
   let query = db.select().from(postsTable);
 
   if (author) {
-    query = query.where(eq(postsTable.author_id, author));
+    query = query.where(eq(postsTable.userId, author));
   }
 
   const orderBy =
@@ -130,8 +134,8 @@ app.post(
         title,
         url,
         content,
-        author_id: user.id,
-        created_at: new Date(),
+        userId: user.id,
+        createdAt: new Date(),
       })
       .returning();
 
@@ -178,8 +182,8 @@ app.post("/:id/upvote", async (c) => {
     .select()
     .from(postUpvotesTable)
     .where(
-      eq(postUpvotesTable.post_id, postId) &&
-        eq(postUpvotesTable.user_id, user.id),
+      eq(postUpvotesTable.postId, postId) &&
+        eq(postUpvotesTable.userId, user.id),
     )
     .limit(1);
 
@@ -188,16 +192,16 @@ app.post("/:id/upvote", async (c) => {
     await db
       .delete(postUpvotesTable)
       .where(
-        eq(postUpvotesTable.post_id, postId) &&
-          eq(postUpvotesTable.user_id, user.id),
+        eq(postUpvotesTable.postId, postId) &&
+          eq(postUpvotesTable.userId, user.id),
       );
   } else {
     // Add upvote
     await db.insert(postUpvotesTable).values({
       id: crypto.randomUUID(),
-      post_id: postId,
-      user_id: user.id,
-      created_at: new Date(),
+      postId: postId,
+      userId: user.id,
+      createdAt: new Date(),
     });
   }
 
@@ -207,22 +211,4 @@ app.post("/:id/upvote", async (c) => {
   });
 });
 
-// Netlify function handler
-export const handler: Handler = async (event, context) => {
-  const url = new URL(event.rawUrl);
-  const path = url.pathname.replace("/.netlify/functions/posts", "");
-
-  const request = new Request(event.rawUrl, {
-    method: event.httpMethod,
-    headers: event.headers as HeadersInit,
-    body: event.body,
-  });
-
-  const response = await app.fetch(request);
-
-  return {
-    statusCode: response.status,
-    headers: Object.fromEntries(response.headers.entries()),
-    body: await response.text(),
-  };
-};
+export default app;
