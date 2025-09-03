@@ -16,34 +16,180 @@
     },
   },
   "packages": {
-    "@hono/zod-validator": ["@hono/zod-validator@0.4.3", "", { "peerDependencies": { "hono": ">=3.9.0", "zod": "^3.19.1" } }, "sha512-xIgMYXDyJ4Hj6ekm9T9Y27s080Nl9NXHcJkOvkXPhubOLj8hZkOL8pDnnXfvCf5xEE8Q4oMFenQUZZREUY2gqQ=="],
+    "@hono/zod-validator": [
+      "@hono/zod-validator@0.4.3",
+      "",
+      { "peerDependencies": { "hono": ">=3.9.0", "zod": "^3.19.1" } },
+      "sha512-xIgMYXDyJ4Hj6ekm9T9Y27s080Nl9NXHcJkOvkXPhubOLj8hZkOL8pDnnXfvCf5xEE8Q4oMFenQUZZREUY2gqQ==",
+    ],
 
-    "@lucia-auth/adapter-drizzle": ["@lucia-auth/adapter-drizzle@1.1.0", "", { "peerDependencies": { "drizzle-orm": ">= 0.29 <1", "lucia": "3.x" } }, "sha512-iCTnZWvfI5lLZOdUHZYiXA1jaspIFEeo2extLxQ3DjP3uOVys7IPwBi7zezLIRu9dhro4H4Kji+7gSYyjcef2A=="],
+    "@lucia-auth/adapter-drizzle": [
+      "@lucia-auth/adapter-drizzle@1.1.0",
+      "",
+      { "peerDependencies": { "drizzle-orm": ">= 0.29 <1", "lucia": "3.x" } },
+      "sha512-iCTnZWvfI5lLZOdUHZYiXA1jaspIFEeo2extLxQ3DjP3uOVys7IPwBi7zezLIRu9dhro4H4Kji+7gSYyjcef2A==",
+    ],
 
-    "@netlify/functions": ["@netlify/functions@2.8.2", "", { "dependencies": { "@netlify/serverless-functions-api": "1.26.1" } }, "sha512-DeoAQh8LuNPvBE4qsKlezjKj0PyXDryOFJfJKo3Z1qZLKzQ21sT314KQKPVjfvw6knqijj+IO+0kHXy/TJiqNA=="],
+    "@netlify/functions": [
+      "@netlify/functions@2.8.2",
+      "",
+      { "dependencies": { "@netlify/serverless-functions-api": "1.26.1" } },
+      "sha512-DeoAQh8LuNPvBE4qsKlezjKj0PyXDryOFJfJKo3Z1qZLKzQ21sT314KQKPVjfvw6knqijj+IO+0kHXy/TJiqNA==",
+    ],
 
-    "@netlify/node-cookies": ["@netlify/node-cookies@0.1.0", "", {}, "sha512-OAs1xG+FfLX0LoRASpqzVntVV/RpYkgpI0VrUnw2u0Q1qiZUzcPffxRK8HF3gc4GjuhG5ahOEMJ9bswBiZPq0g=="],
+    "@netlify/node-cookies": [
+      "@netlify/node-cookies@0.1.0",
+      "",
+      {},
+      "sha512-OAs1xG+FfLX0LoRASpqzVntVV/RpYkgpI0VrUnw2u0Q1qiZUzcPffxRK8HF3gc4GjuhG5ahOEMJ9bswBiZPq0g==",
+    ],
 
-    "@netlify/serverless-functions-api": ["@netlify/serverless-functions-api@1.26.1", "", { "dependencies": { "@netlify/node-cookies": "^0.1.0", "urlpattern-polyfill": "8.0.2" } }, "sha512-q3L9i3HoNfz0SGpTIS4zTcKBbRkxzCRpd169eyiTuk3IwcPC3/85mzLHranlKo2b+HYT0gu37YxGB45aD8A3Tw=="],
+    "@netlify/serverless-functions-api": [
+      "@netlify/serverless-functions-api@1.26.1",
+      "",
+      {
+        "dependencies": {
+          "@netlify/node-cookies": "^0.1.0",
+          "urlpattern-polyfill": "8.0.2",
+        },
+      },
+      "sha512-q3L9i3HoNfz0SGpTIS4zTcKBbRkxzCRpd169eyiTuk3IwcPC3/85mzLHranlKo2b+HYT0gu37YxGB45aD8A3Tw==",
+    ],
 
-    "@oslojs/asn1": ["@oslojs/asn1@1.0.0", "", { "dependencies": { "@oslojs/binary": "1.0.0" } }, "sha512-zw/wn0sj0j0QKbIXfIlnEcTviaCzYOY3V5rAyjR6YtOByFtJiT574+8p9Wlach0lZH9fddD4yb9laEAIl4vXQA=="],
+    "@oslojs/asn1": [
+      "@oslojs/asn1@1.0.0",
+      "",
+      { "dependencies": { "@oslojs/binary": "1.0.0" } },
+      "sha512-zw/wn0sj0j0QKbIXfIlnEcTviaCzYOY3V5rAyjR6YtOByFtJiT574+8p9Wlach0lZH9fddD4yb9laEAIl4vXQA==",
+    ],
 
-    "@oslojs/binary": ["@oslojs/binary@1.0.0", "", {}, "sha512-9RCU6OwXU6p67H4NODbuxv2S3eenuQ4/WFLrsq+K/k682xrznH5EVWA7N4VFk9VYVcbFtKqur5YQQZc0ySGhsQ=="],
+    "@oslojs/binary": [
+      "@oslojs/binary@1.0.0",
+      "",
+      {},
+      "sha512-9RCU6OwXU6p67H4NODbuxv2S3eenuQ4/WFLrsq+K/k682xrznH5EVWA7N4VFk9VYVcbFtKqur5YQQZc0ySGhsQ==",
+    ],
 
-    "@oslojs/crypto": ["@oslojs/crypto@1.0.1", "", { "dependencies": { "@oslojs/asn1": "1.0.0", "@oslojs/binary": "1.0.0" } }, "sha512-7n08G8nWjAr/Yu3vu9zzrd0L9XnrJfpMioQcvCMxBIiF5orECHe5/3J0jmXRVvgfqMm/+4oxlQ+Sq39COYLcNQ=="],
+    "@oslojs/crypto": [
+      "@oslojs/crypto@1.0.1",
+      "",
+      {
+        "dependencies": { "@oslojs/asn1": "1.0.0", "@oslojs/binary": "1.0.0" },
+      },
+      "sha512-7n08G8nWjAr/Yu3vu9zzrd0L9XnrJfpMioQcvCMxBIiF5orECHe5/3J0jmXRVvgfqMm/+4oxlQ+Sq39COYLcNQ==",
+    ],
 
-    "@oslojs/encoding": ["@oslojs/encoding@1.1.0", "", {}, "sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ=="],
+    "@oslojs/encoding": [
+      "@oslojs/encoding@1.1.0",
+      "",
+      {},
+      "sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ==",
+    ],
 
-    "drizzle-orm": ["drizzle-orm@0.34.1", "", { "peerDependencies": { "@aws-sdk/client-rds-data": ">=3", "@cloudflare/workers-types": ">=3", "@electric-sql/pglite": ">=0.1.1", "@libsql/client": ">=0.10.0", "@neondatabase/serverless": ">=0.1", "@op-engineering/op-sqlite": ">=2", "@opentelemetry/api": "^1.4.1", "@planetscale/database": ">=1", "@prisma/client": "*", "@tidbcloud/serverless": "*", "@types/better-sqlite3": "*", "@types/pg": "*", "@types/react": ">=18", "@types/sql.js": "*", "@vercel/postgres": ">=0.8.0", "@xata.io/client": "*", "better-sqlite3": ">=7", "bun-types": "*", "expo-sqlite": ">=13.2.0", "knex": "*", "kysely": "*", "mysql2": ">=2", "pg": ">=8", "postgres": ">=3", "react": ">=18", "sql.js": ">=1", "sqlite3": ">=5" }, "optionalPeers": ["@aws-sdk/client-rds-data", "@cloudflare/workers-types", "@electric-sql/pglite", "@libsql/client", "@neondatabase/serverless", "@op-engineering/op-sqlite", "@opentelemetry/api", "@planetscale/database", "@prisma/client", "@tidbcloud/serverless", "@types/better-sqlite3", "@types/pg", "@types/react", "@types/sql.js", "@vercel/postgres", "@xata.io/client", "better-sqlite3", "bun-types", "expo-sqlite", "knex", "kysely", "mysql2", "pg", "postgres", "react", "sql.js", "sqlite3"] }, "sha512-t+zCwyWWt8xTqtYV4doE/xYmT7hpv1L8pQ66zddEz+3VWyedBBtctjMAp22mAJPfyWurRQXUJ1nrTtqLq+DqNA=="],
+    "drizzle-orm": [
+      "drizzle-orm@0.34.1",
+      "",
+      {
+        "peerDependencies": {
+          "@aws-sdk/client-rds-data": ">=3",
+          "@cloudflare/workers-types": ">=3",
+          "@electric-sql/pglite": ">=0.1.1",
+          "@libsql/client": ">=0.10.0",
+          "@neondatabase/serverless": ">=0.1",
+          "@op-engineering/op-sqlite": ">=2",
+          "@opentelemetry/api": "^1.4.1",
+          "@planetscale/database": ">=1",
+          "@prisma/client": "*",
+          "@tidbcloud/serverless": "*",
+          "@types/better-sqlite3": "*",
+          "@types/pg": "*",
+          "@types/react": ">=18",
+          "@types/sql.js": "*",
+          "@vercel/postgres": ">=0.8.0",
+          "@xata.io/client": "*",
+          "better-sqlite3": ">=7",
+          "bun-types": "*",
+          "expo-sqlite": ">=13.2.0",
+          "knex": "*",
+          "kysely": "*",
+          "mysql2": ">=2",
+          "pg": ">=8",
+          "postgres": ">=3",
+          "react": ">=18",
+          "sql.js": ">=1",
+          "sqlite3": ">=5",
+        },
+        "optionalPeers": [
+          "@aws-sdk/client-rds-data",
+          "@cloudflare/workers-types",
+          "@electric-sql/pglite",
+          "@libsql/client",
+          "@neondatabase/serverless",
+          "@op-engineering/op-sqlite",
+          "@opentelemetry/api",
+          "@planetscale/database",
+          "@prisma/client",
+          "@tidbcloud/serverless",
+          "@types/better-sqlite3",
+          "@types/pg",
+          "@types/react",
+          "@types/sql.js",
+          "@vercel/postgres",
+          "@xata.io/client",
+          "better-sqlite3",
+          "bun-types",
+          "expo-sqlite",
+          "knex",
+          "kysely",
+          "mysql2",
+          "pg",
+          "postgres",
+          "react",
+          "sql.js",
+          "sqlite3",
+        ],
+      },
+      "sha512-t+zCwyWWt8xTqtYV4doE/xYmT7hpv1L8pQ66zddEz+3VWyedBBtctjMAp22mAJPfyWurRQXUJ1nrTtqLq+DqNA==",
+    ],
 
-    "hono": ["hono@4.9.5", "", {}, "sha512-aLAVl5/67ifNnoFVxnhR89dpmSLsgwBprw/PT671ASwUpJqmd7Ne8KPTQo37DbRZfgpHaHeZ4bPVUvbOkeedMw=="],
+    "hono": [
+      "hono@4.9.5",
+      "",
+      {},
+      "sha512-aLAVl5/67ifNnoFVxnhR89dpmSLsgwBprw/PT671ASwUpJqmd7Ne8KPTQo37DbRZfgpHaHeZ4bPVUvbOkeedMw==",
+    ],
 
-    "lucia": ["lucia@3.2.2", "", { "dependencies": { "@oslojs/crypto": "^1.0.1", "@oslojs/encoding": "^1.1.0" } }, "sha512-P1FlFBGCMPMXu+EGdVD9W4Mjm0DqsusmKgO7Xc33mI5X1bklmsQb0hfzPhXomQr9waWIBDsiOjvr1e6BTaUqpA=="],
+    "lucia": [
+      "lucia@3.2.2",
+      "",
+      {
+        "dependencies": {
+          "@oslojs/crypto": "^1.0.1",
+          "@oslojs/encoding": "^1.1.0",
+        },
+      },
+      "sha512-P1FlFBGCMPMXu+EGdVD9W4Mjm0DqsusmKgO7Xc33mI5X1bklmsQb0hfzPhXomQr9waWIBDsiOjvr1e6BTaUqpA==",
+    ],
 
-    "postgres": ["postgres@3.4.7", "", {}, "sha512-Jtc2612XINuBjIl/QTWsV5UvE8UHuNblcO3vVADSrKsrc6RqGX6lOW1cEo3CM2v0XG4Nat8nI+YM7/f26VxXLw=="],
+    "postgres": [
+      "postgres@3.4.7",
+      "",
+      {},
+      "sha512-Jtc2612XINuBjIl/QTWsV5UvE8UHuNblcO3vVADSrKsrc6RqGX6lOW1cEo3CM2v0XG4Nat8nI+YM7/f26VxXLw==",
+    ],
 
-    "urlpattern-polyfill": ["urlpattern-polyfill@8.0.2", "", {}, "sha512-Qp95D4TPJl1kC9SKigDcqgyM2VDVO4RiJc2d4qe5GrYm+zbIQCWWKAFaJNQ4BhdFeDGwBmAxqJBwWSJDb9T3BQ=="],
+    "urlpattern-polyfill": [
+      "urlpattern-polyfill@8.0.2",
+      "",
+      {},
+      "sha512-Qp95D4TPJl1kC9SKigDcqgyM2VDVO4RiJc2d4qe5GrYm+zbIQCWWKAFaJNQ4BhdFeDGwBmAxqJBwWSJDb9T3BQ==",
+    ],
 
-    "zod": ["zod@3.25.76", "", {}, "sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ=="],
-  }
+    "zod": [
+      "zod@3.25.76",
+      "",
+      {},
+      "sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==",
+    ],
+  },
 }
