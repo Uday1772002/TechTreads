@@ -1,14 +1,5 @@
 {
   "name": "techtreads-api",
   "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "@hono/zod-validator": "^0.4.1",
-    "@lucia-auth/adapter-drizzle": "^1.1.0",
-    "drizzle-orm": "^0.34.1",
-    "hono": "^4.6.3",
-    "lucia": "^3.2.1",
-    "postgres": "^3.4.4",
-    "zod": "^3.23.8"
-  }
+  "type": "module"
 }

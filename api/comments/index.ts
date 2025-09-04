@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
-import { asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 
 import { zValidator } from "@hono/zod-validator";
@@ -140,11 +140,9 @@ app.post(
     const [comment] = await db
       .insert(commentsTable)
       .values({
-        id: generateId(15),
         content,
         postId: postId,
         userId: user.id,
-        createdAt: new Date(),
       })
       .returning();
 
@@ -188,12 +186,10 @@ app.post(
     const [comment] = await db
       .insert(commentsTable)
       .values({
-        id: generateId(15),
         content,
         postId: parentComment.postId,
         parentCommentId: parentCommentId,
         userId: user.id,
-        createdAt: new Date(),
       })
       .returning();
 
@@ -222,8 +218,10 @@ app.post("/:id/upvote", async (c) => {
     .select()
     .from(commentUpvotesTable)
     .where(
-      eq(commentUpvotesTable.commentId, commentId) &&
+      and(
+        eq(commentUpvotesTable.commentId, commentId),
         eq(commentUpvotesTable.userId, user.id),
+      ),
     )
     .limit(1);
 
@@ -232,16 +230,16 @@ app.post("/:id/upvote", async (c) => {
     await db
       .delete(commentUpvotesTable)
       .where(
-        eq(commentUpvotesTable.commentId, commentId) &&
+        and(
+          eq(commentUpvotesTable.commentId, commentId),
           eq(commentUpvotesTable.userId, user.id),
+        ),
       );
   } else {
     // Add upvote
     await db.insert(commentUpvotesTable).values({
-      id: generateId(15),
       commentId: commentId,
       userId: user.id,
-      createdAt: new Date(),
     });
   }
 

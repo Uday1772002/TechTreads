@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
-import { asc, count, desc, eq } from "drizzle-orm";
+import { and, asc, count, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 
 import { zValidator } from "@hono/zod-validator";
@@ -130,12 +130,10 @@ app.post(
     const [post] = await db
       .insert(postsTable)
       .values({
-        id: crypto.randomUUID(),
         title,
         url,
         content,
         userId: user.id,
-        createdAt: new Date(),
       })
       .returning();
 
@@ -182,8 +180,10 @@ app.post("/:id/upvote", async (c) => {
     .select()
     .from(postUpvotesTable)
     .where(
-      eq(postUpvotesTable.postId, postId) &&
+      and(
+        eq(postUpvotesTable.postId, postId),
         eq(postUpvotesTable.userId, user.id),
+      ),
     )
     .limit(1);
 
@@ -192,16 +192,16 @@ app.post("/:id/upvote", async (c) => {
     await db
       .delete(postUpvotesTable)
       .where(
-        eq(postUpvotesTable.postId, postId) &&
+        and(
+          eq(postUpvotesTable.postId, postId),
           eq(postUpvotesTable.userId, user.id),
+        ),
       );
   } else {
     // Add upvote
     await db.insert(postUpvotesTable).values({
-      id: crypto.randomUUID(),
       postId: postId,
       userId: user.id,
-      createdAt: new Date(),
     });
   }
 
