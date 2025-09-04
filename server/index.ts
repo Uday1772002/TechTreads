@@ -1,7 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
-import { serveStatic } from "hono/node-server/serve-static";
 
 import { type ErrorResponse } from "@/shared/types";
 
@@ -100,8 +99,7 @@ app.get("/health", (c) => {
   });
 });
 
-app.get("*", serveStatic({ root: "./frontend/dist" }));
-app.get("*", serveStatic({ path: "./frontend/dist/index.html" }));
+// Static file serving is handled by Vercel/Netlify, not needed for API-only deployment
 
 // For Vercel deployment
 export default app.fetch;
