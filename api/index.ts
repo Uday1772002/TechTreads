@@ -1,3 +1,2 @@
-import handler from "../server/index.js";
-
-export default handler;
+const handler = require('../server/index.ts');
+module.exports = handler;

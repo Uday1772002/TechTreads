@@ -1,7 +1,6 @@
 {
   "name": "techtreads-api",
   "version": "1.0.0",
-  "type": "module",
   "dependencies": {
     "@hono/zod-validator": "^0.4.1",
     "@lucia-auth/adapter-drizzle": "^1.1.0",
