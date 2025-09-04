@@ -1,7 +1,6 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { eq } from "drizzle-orm";
-import bcrypt from "bcrypt";
 
 import { db } from "@/adapter";
 import type { Context } from "@/context";
@@ -9,6 +8,7 @@ import { userTable } from "@/db/schemas/auth";
 import { lucia } from "@/lucia";
 import { loggedIn } from "@/middleware/loggedIn";
 import { zValidator } from "@hono/zod-validator";
+import bcrypt from "bcrypt";
 import { generateId } from "lucia";
 import postgres from "postgres";
 
