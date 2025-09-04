@@ -3,7 +3,7 @@
   "builds": [
     {
       "src": "server/index.ts",
-      "use": "@vercel/bun"
+      "use": "@vercel/node"
     }
   ],
   "routes": [

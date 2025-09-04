@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import { serveStatic } from "hono/bun";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
+import { serveStatic } from "hono/node-server/serve-static";
 
 import { type ErrorResponse } from "@/shared/types";
 
@@ -103,11 +103,12 @@ app.get("/health", (c) => {
 app.get("*", serveStatic({ root: "./frontend/dist" }));
 app.get("*", serveStatic({ path: "./frontend/dist/index.html" }));
 
-export default {
-  port: process.env["PORT"] || 3000,
-  hostname: "0.0.0.0",
-  fetch: app.fetch,
-};
+// For Vercel deployment
+export default app.fetch;
 
-console.log("Server Running on port", process.env["PORT"] || 3000);
+// For local development
+if (process.env.NODE_ENV !== "production") {
+  console.log("Server Running on port", process.env["PORT"] || 3000);
+}
+
 export type ApiRoutes = typeof routes;

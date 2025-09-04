@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { eq } from "drizzle-orm";
+import bcrypt from "bcrypt";
 
 import { db } from "@/adapter";
 import type { Context } from "@/context";
@@ -16,7 +17,7 @@ import { loginSchema, type SuccessResponse } from "@/shared/types";
 export const authRouter = new Hono<Context>()
   .post("/signup", zValidator("form", loginSchema), async (c) => {
     const { username, password } = c.req.valid("form");
-    const passwordHash = await Bun.password.hash(password);
+    const passwordHash = await bcrypt.hash(password, 12);
     const userId = generateId(15);
 
     try {
@@ -65,7 +66,7 @@ export const authRouter = new Hono<Context>()
       });
     }
 
-    const validPassword = await Bun.password.verify(
+    const validPassword = await bcrypt.compare(
       password,
       existingUser.password_hash,
     );
